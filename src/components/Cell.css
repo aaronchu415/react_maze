@@ -1,0 +1,19 @@
+.Start {
+  background-color: red;
+}
+.End {
+  background-color: red;
+}
+.Blank {
+  background-color: white;
+}
+.Wall {
+  background-color: #343a40;
+}
+
+.visited {
+  background-color: yellow;
+}
+.final_path {
+  background-color: green;
+}
