@@ -18,8 +18,12 @@ class Cell extends Component {
         cellClass = 'visited'
       }
     }
-
-    return (<td onClick={() => this.props.click(this.props.cell.i, this.props.cell.j)} className={cellClass}>
+    // onClick={() => this.props.click(this.props.cell.i, this.props.cell.j)}
+    return (<td
+      onMouseDown={() => this.props.mDown(this.props.cell.i, this.props.cell.j)}
+      onMouseUp={() => this.props.mUp(this.props.cell.i, this.props.cell.j)}
+      onMouseOver={() => this.props.drag(this.props.cell.i, this.props.cell.j)}
+      className={cellClass}>
 
     </td>);
   }

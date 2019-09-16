@@ -87,7 +87,8 @@ class Board {
     return board;
   }
 
-  handleClick(i, j, newType) {
+  handleClickWall(i, j, newType) {
+
 
     let cell = this.board[i][j];
 
@@ -97,6 +98,17 @@ class Board {
     } else {
       cell.type = newType;
     }
+  }
+
+  handleClickStartEnd(i, j, newType, oldCell) {
+
+    //set old cell to blank
+    if (oldCell) oldCell.type = 'Blank'
+
+    //set current cell to newType
+    let currCell = this.board[i][j];
+    currCell.type = newType
+
   }
 
 }
@@ -109,11 +121,43 @@ export default class Game {
     this.end = [ROW - 1, COL - 1];
 
     //set start
-    this.Board.handleClick(this.start[0], this.start[1], 'Start');
+    this.Board.handleClickStartEnd(this.start[0], this.start[1], 'Start', null);
 
     //set end
-    this.Board.handleClick(this.end[0], this.end[1], 'End');
+    this.Board.handleClickStartEnd(this.end[0], this.end[1], 'End', null);
 
+  }
+
+  _notStartOrEnd(i, j) {
+
+    let is_start_or_end = false
+
+    // i,j is equal to start or end corrds
+    if (i === this.start[0] && j === this.start[1]) is_start_or_end = true
+    if (i === this.end[0] && j === this.end[1]) is_start_or_end = true
+
+    return !is_start_or_end
+  }
+
+  handleClick(i, j, newType) {
+    if (newType === 'Wall' || newType === 'Blank') {
+      if (this._notStartOrEnd(i, j)) this.Board.handleClickWall(i, j, 'Wall')
+    }
+    else if (newType === 'Start') {
+
+      //change old start to new start
+      let old_start = this.Board.board[this.start[0]][this.start[1]]
+      this.Board.handleClickStartEnd(i, j, 'Start', old_start)
+      //reset new start
+      this.start = [i, j]
+    } else if (newType === 'End') {
+
+      //change old end to new end
+      let old_end = this.Board.board[this.end[0]][this.end[1]]
+      this.Board.handleClickStartEnd(i, j, 'End', old_end)
+      //reset new start
+      this.end = [i, j]
+    }
   }
 
   randomizeBoard() {

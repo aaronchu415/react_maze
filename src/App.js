@@ -10,7 +10,9 @@ class App extends Component {
     super(props);
 
     this.state = {
-      game: this._initBoard()
+      game: this._initBoard(),
+      drag: false,
+      selection: 'Wall',
     }
   }
 
@@ -39,10 +41,21 @@ class App extends Component {
     return game
   }
 
-  handleBoardClick = (i, j) => {
-    let clone = Object.assign(Object.create(Object.getPrototypeOf(this.state.game)), this.state.game)
+  _copyBoard() {
+    return Object.assign(Object.create(Object.getPrototypeOf(this.state.game)), this.state.game)
+  }
+
+  handleBoardClick = (i, j, curr_type) => {
+
+    //create copy of board
+    let clone = this._copyBoard()
+    //clear visited and current flags
     clone.clearBoardExceptWall()
-    clone.Board.handleClick(i, j, 'Wall')
+
+    //modify current cell
+    clone.handleClick(i, j, curr_type)
+
+    //update final path
     let final_path = clone.runBFS()
 
     for (let cell of final_path) {
@@ -52,6 +65,33 @@ class App extends Component {
     this.setState({ game: clone })
   }
 
+  handleMouseDown = (i, j) => {
+
+    //get current cell and its type if it is start or end then set selection
+    let curr_cell = this.state.game.Board.board[i][j];
+    let curr_type = curr_cell.type
+
+    //set the type to selection and make drag true
+    this.setState({ drag: true, selection: curr_type })
+
+    //if drag is not intiated then 'click' on board
+    if (!this.state.drag) this.handleBoardClick(i, j, this.state.selection);
+
+  }
+
+  handleMouseUp = () => {
+
+    //on mouse up set drag to false, also reset selection to wall
+    this.setState({ drag: false, selection: 'Wall' })
+  }
+
+  handleDrag = (i, j) => {
+
+    //if drag is on, then set to current selection
+    if (this.state.drag) {
+      this.handleBoardClick(i, j, this.state.selection);
+    }
+  }
 
   // componentDidMount() {
   //   this.updateWindowDimensions();
@@ -70,7 +110,7 @@ class App extends Component {
     return (
       <div className="App">
         <NavBar />
-        <Board board={this.state.game.Board.board} boardClick={this.handleBoardClick} />
+        <Board boardDrag={this.handleDrag} boardMouseUp={this.handleMouseUp} boardMouseDown={this.handleMouseDown} board={this.state.game.Board.board} boardClick={this.handleBoardClick} />
       </div>
     );
   }
