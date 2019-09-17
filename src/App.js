@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './App.css';
 import NavBar from './components/NavBar';
 import Board from './components/Board';
@@ -13,7 +14,15 @@ class App extends Component {
       game: this._initBoard(),
       drag: false,
       selection: 'Wall',
+      recentlyPressed: [-1, -1],
     }
+  }
+
+  componentDidMount() {
+    ReactDOM.findDOMNode(this).addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      console.log("touchstart triggered");
+    });
   }
 
   _initBoard() {
@@ -65,7 +74,14 @@ class App extends Component {
     this.setState({ game: clone })
   }
 
-  handleMouseDown = (i, j) => {
+  handleMouseDown = (e, i, j) => {
+
+    if (this.state.drag) {
+      e.preventDefault()
+      return
+    }
+    console.log('down', e, i, j)
+
 
     //get current cell and its type if it is start or end then set selection
     let curr_cell = this.state.game.Board.board[i][j];
@@ -81,16 +97,41 @@ class App extends Component {
 
   handleMouseUp = () => {
 
+    console.log('up')
+
     //on mouse up set drag to false, also reset selection to wall
     this.setState({ drag: false, selection: 'Wall' })
   }
 
   handleDrag = (i, j) => {
 
+    console.log('drag', i, j)
+
     //if drag is on, then set to current selection
     if (this.state.drag) {
       this.handleBoardClick(i, j, this.state.selection);
     }
+  }
+
+  handleTouchMove = (e, i, j) => {
+
+    let elem = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+    let x = elem.id.split('-')[0]
+    let y = elem.id.split('-')[1]
+
+    let [prevX, prevY] = this.state.recentlyPressed
+
+    if (prevX === x && prevY === y) return
+
+    console.log('move', x, y, this.state.drag, elem)
+
+
+    if (this.state.drag) {
+      this.handleBoardClick(x, y, this.state.selection);
+      this.setState({ recentlyPressed: [x, y] })
+    }
+
+
   }
 
   // componentDidMount() {
@@ -110,7 +151,7 @@ class App extends Component {
     return (
       <div className="App">
         <NavBar />
-        <Board boardDrag={this.handleDrag} boardMouseUp={this.handleMouseUp} boardMouseDown={this.handleMouseDown} board={this.state.game.Board.board} boardClick={this.handleBoardClick} />
+        <Board boardTouchMove={this.handleTouchMove} boardDrag={this.handleDrag} boardMouseUp={this.handleMouseUp} boardMouseDown={this.handleMouseDown} board={this.state.game.Board.board} boardClick={this.handleBoardClick} />
       </div>
     );
   }

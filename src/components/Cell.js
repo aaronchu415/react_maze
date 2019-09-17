@@ -19,10 +19,15 @@ class Cell extends Component {
       }
     }
     // onClick={() => this.props.click(this.props.cell.i, this.props.cell.j)}
-    return (<td
-      onMouseDown={() => this.props.mDown(this.props.cell.i, this.props.cell.j)}
+    return (<td key={`${this.props.cell.i - this.props.cell.j}`} id={`${this.props.cell.i}-${this.props.cell.j}`}
+      onMouseDown={(e) => this.props.mDown(e, this.props.cell.i, this.props.cell.j)}
       onMouseUp={() => this.props.mUp(this.props.cell.i, this.props.cell.j)}
       onMouseOver={() => this.props.drag(this.props.cell.i, this.props.cell.j)}
+
+      onTouchStart={(e) => this.props.mDown(e, this.props.cell.i, this.props.cell.j)}
+      onTouchEnd={() => this.props.mUp(this.props.cell.i, this.props.cell.j)}
+      onTouchMove={(e) => this.props.touchMove(e, this.props.cell.i, this.props.cell.j)}
+
       className={cellClass}>
 
     </td>);

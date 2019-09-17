@@ -7,7 +7,7 @@ class Board extends Component {
   renderRow(row) {
     return (
       <tr>
-        {row.map(cell => <Cell drag={(i, j) => this.props.boardDrag(i, j)} mUp={(i, j) => this.props.boardMouseUp(i, j)} mDown={(i, j) => this.props.boardMouseDown(i, j)} click={(i, j) => this.props.boardClick(i, j)} cell={cell}></Cell>)}
+        {row.map(cell => <Cell drag={(i, j) => this.props.boardDrag(i, j)} touchMove={(e, i, j) => this.props.boardTouchMove(e, i, j)} mUp={(i, j) => this.props.boardMouseUp(i, j)} mDown={(e, i, j) => this.props.boardMouseDown(e, i, j)} click={(i, j) => this.props.boardClick(i, j)} cell={cell}></Cell>)}
       </tr>
     )
   }

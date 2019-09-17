@@ -134,7 +134,7 @@ export default class Game {
 
     // i,j is equal to start or end corrds
     if (i === this.start[0] && j === this.start[1]) is_start_or_end = true
-    if (i === this.end[0] && j === this.end[1]) is_start_or_end = true
+    else if (i === this.end[0] && j === this.end[1]) is_start_or_end = true
 
     return !is_start_or_end
   }
