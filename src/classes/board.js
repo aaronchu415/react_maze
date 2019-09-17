@@ -117,7 +117,7 @@ export default class Game {
 
   constructor(COL, ROW) {
     this.Board = new Board(COL, ROW);
-    this.start = [0, 0];
+    this.start = [1, 1];
     this.end = [ROW - 1, COL - 1];
 
     //set start
@@ -134,14 +134,16 @@ export default class Game {
 
     // i,j is equal to start or end corrds
     if (i === this.start[0] && j === this.start[1]) is_start_or_end = true
-    else if (i === this.end[0] && j === this.end[1]) is_start_or_end = true
+    if (i === this.end[0] && j === this.end[1]) is_start_or_end = true
 
     return !is_start_or_end
   }
 
   handleClick(i, j, newType) {
     if (newType === 'Wall' || newType === 'Blank') {
-      if (this._notStartOrEnd(i, j)) this.Board.handleClickWall(i, j, 'Wall')
+      if (this._notStartOrEnd(i, j)) {
+        this.Board.handleClickWall(i, j, 'Wall')
+      }
     }
     else if (newType === 'Start') {
 

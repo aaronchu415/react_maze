@@ -15,6 +15,7 @@ class App extends Component {
       drag: false,
       selection: 'Wall',
       recentlyPressed: [-1, -1],
+      prev_elem: null,
     }
   }
 
@@ -91,7 +92,9 @@ class App extends Component {
     this.setState({ drag: true, selection: curr_type })
 
     //if drag is not intiated then 'click' on board
-    if (!this.state.drag) this.handleBoardClick(i, j, this.state.selection);
+    if (!this.state.drag) {
+      this.setState({ recentlyPressed: [i, j] }, () => this.handleBoardClick(i, j, this.state.selection))
+    }
 
   }
 
@@ -115,20 +118,24 @@ class App extends Component {
 
   handleTouchMove = (e, i, j) => {
 
+
     let elem = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+
+    if (this.state.prev_elem === elem.id) return
+    else this.setState({ prev_elem: elem.id })
+
     let x = elem.id.split('-')[0]
     let y = elem.id.split('-')[1]
 
     let [prevX, prevY] = this.state.recentlyPressed
 
-    if (prevX === x && prevY === y) return
-
     console.log('move', x, y, this.state.drag, elem)
+    if (prevX === x && prevY === y) return
 
 
     if (this.state.drag) {
-      this.handleBoardClick(x, y, this.state.selection);
-      this.setState({ recentlyPressed: [x, y] })
+
+      this.setState({ recentlyPressed: [x, y] }, () => this.handleBoardClick(x, y, this.state.selection))
     }
 
 
