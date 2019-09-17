@@ -1,29 +1,94 @@
 .Start {
   background-color: red;
+  cursor: pointer;
+}
+
+.Start:hover {
+  transform: scale(1.1);
+  background-color: red;
 }
 .End {
-  background-color: red;
+  background-color: darkorange;
+  cursor: pointer;
+}
+
+.End:hover {
+  transform: scale(1.1);
+  background-color: darkorange;
 }
 .Blank {
   background-color: white;
+  cursor: pointer;
 }
+
+.Blank:hover {
+  transform: scale(1.1);
+  background-color: white;
+}
+
 .Wall {
   background-color: #343a40;
+  animation: fadeinWall 0.5s;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+}
+
+.Wall:hover {
+  transform: scale(1.1);
+  background-color: gray;
 }
 
 .visited {
   background-color: yellow;
+  cursor: pointer;
+  animation: fadeinVisited 0.5s;
 }
+
+.visited:hover {
+  transform: scale(1.1);
+  background-color: yellow;
+}
+
 .final_path {
   background-color: green;
-  animation: fadein 1s;
+  animation: fadein 0.5s;
+}
+
+@keyframes fadeinWall {
+  from {
+    opacity: 0;
+    transform: scale(0.25);
+    background-color: white;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.25);
+    background-color: lightblue;
+  }
+}
+
+@keyframes fadeinVisited {
+  from {
+    opacity: 0;
+    transform: scale(0);
+    background-color: green;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    background-color: lightblue;
+  }
 }
 
 @keyframes fadein {
   from {
     opacity: 0;
+    transform: scale(0);
+    background-color: green;
   }
   to {
     opacity: 1;
+    transform: scale(1);
+    background-color: lightgreen;
   }
 }

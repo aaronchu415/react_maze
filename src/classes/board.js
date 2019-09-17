@@ -102,6 +102,10 @@ class Board {
 
   handleClickStartEnd(i, j, newType, oldCell) {
 
+    //if newCell is oldCell return
+    if (oldCell && oldCell.i === i && oldCell.j === j) {
+      return
+    }
     //set old cell to blank
     if (oldCell) oldCell.type = 'Blank'
 
@@ -128,20 +132,20 @@ export default class Game {
 
   }
 
-  _notStartOrEnd(i, j) {
+  _isStartOrEnd(i, j) {
 
     let is_start_or_end = false
 
     // i,j is equal to start or end corrds
-    if (i === this.start[0] && j === this.start[1]) is_start_or_end = true
-    if (i === this.end[0] && j === this.end[1]) is_start_or_end = true
+    if (Number(i) === Number(this.start[0]) && Number(j) === Number(this.start[1])) is_start_or_end = true
+    if (Number(i) === Number(this.end[0]) && Number(j) === Number(this.end[1])) is_start_or_end = true
 
-    return !is_start_or_end
+    return is_start_or_end
   }
 
   handleClick(i, j, newType) {
     if (newType === 'Wall' || newType === 'Blank') {
-      if (this._notStartOrEnd(i, j)) {
+      if (!this._isStartOrEnd(i, j)) {
         this.Board.handleClickWall(i, j, 'Wall')
       }
     }
@@ -184,6 +188,112 @@ export default class Game {
         cell.final_path = false
       }
     }
+  }
+
+  runAlgo(algo_name, command) {
+
+    if (algo_name === 'BFS') {
+      if (command === 'init') return this.runBFSVisualize(command)
+      else if (command === 'run') {
+        let i = 0;
+
+        while (i <= 30) {
+
+          let result = this.runBFSVisualize(command)
+          if (result) return true
+          i++
+        }
+      }
+    }
+
+  }
+
+  runBFSVisualize(action) {
+
+    if (action === 'init') {
+      let startCell = this.Board.board[this.start[0]][this.start[1]];
+      this.q = [startCell];
+      this.q_path = [[startCell]];
+      this.final_path = []
+
+      //mark as visited
+      startCell.visited = true;
+      //mark as current
+      startCell.current = true;
+
+    } else if (action === 'run') {
+
+      if (this.q.length > 0) {
+        let curr = this.q.shift();
+        let curr_path = this.q_path.shift();
+
+        if (curr.isEnd()) {
+          curr.current = false;
+          this.final_path = [...curr_path]
+          this.q = []
+          this.q_path = []
+
+          return true
+        }
+
+        let valid_paths = this.Board.findValidNextPath(curr);
+
+        for (let path of valid_paths) {
+
+          //if not visited
+          if (!path.isVisited()) {
+
+            this.q.push(path);
+            this.q_path.push([...curr_path, path]);
+            //mark as visited
+            path.visited = true;
+            //mark as current
+            path.current = true;
+          }
+        }
+        //remove current
+        curr.current = false;
+
+      }
+    }
+
+    // var interval = setInterval(() => {
+    //   if (q.length > 0) {
+    //     let curr = q.shift();
+    //     console.log(curr)
+    //     let curr_path = q_path.shift();
+
+    //     if (curr.isEnd()) {
+    //       curr.current = false;
+    //       final_path = [...curr_path]
+    //       q = []
+    //       q_path = []
+    //     }
+
+    //     let valid_paths = this.Board.findValidNextPath(curr);
+
+    //     for (let path of valid_paths) {
+
+    //       //if not visited
+    //       if (!path.isVisited()) {
+    //         q.push(path);
+    //         q_path.push([...curr_path, path]);
+    //         //mark as visited
+    //         path.visited = true;
+    //         //mark as current
+    //         path.current = true;
+    //       }
+    //     }
+
+    //     //remove current
+    //     curr.current = false;
+    //   }
+    //   else {
+    //     clearInterval(interval);
+    //   }
+    // }, 500);
+
+    return false
   }
 
   runBFS() {
@@ -234,7 +344,7 @@ export default class Game {
 
 
 
-// let game = new Game(20, 20);
+// let game = new Game(5, 5);
 // game.randomizeBoard()
 // console.log(game.Board.board)
-// console.log(game.runBFS())
+// console.log(game.runBFSVisualize())

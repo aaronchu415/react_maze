@@ -22,7 +22,6 @@ class App extends Component {
   componentDidMount() {
     ReactDOM.findDOMNode(this).addEventListener('touchstart', (e) => {
       e.preventDefault();
-      console.log("touchstart triggered");
     });
   }
 
@@ -31,12 +30,24 @@ class App extends Component {
     let COL = 50;
     let ROW = 50;
 
-    if (window.innerWidth <= 576) {
+    if (window.outerWidth <= 320) {
+      ROW = 19;
+      COL = 10;
+    }
+    else if (window.outerWidth <= 375) {
+      ROW = 29;
+      COL = 12;
+    }
+    else if (window.outerWidth <= 576) {
       ROW = 20;
       COL = 15;
     }
-    else if (window.innerWidth <= 768) {
-      ROW = 30;
+    else if (window.outerWidth <= 768) {
+      ROW = 39;
+      COL = 20;
+    }
+    else if (window.outerWidth <= 1024) {
+      ROW = 50;
       COL = 20;
     }
 
@@ -81,8 +92,6 @@ class App extends Component {
       e.preventDefault()
       return
     }
-    console.log('down', e, i, j)
-
 
     //get current cell and its type if it is start or end then set selection
     let curr_cell = this.state.game.Board.board[i][j];
@@ -99,16 +108,11 @@ class App extends Component {
   }
 
   handleMouseUp = () => {
-
-    console.log('up')
-
     //on mouse up set drag to false, also reset selection to wall
     this.setState({ drag: false, selection: 'Wall' })
   }
 
   handleDrag = (i, j) => {
-
-    console.log('drag', i, j)
 
     //if drag is on, then set to current selection
     if (this.state.drag) {
@@ -129,7 +133,6 @@ class App extends Component {
 
     let [prevX, prevY] = this.state.recentlyPressed
 
-    console.log('move', x, y, this.state.drag, elem)
     if (prevX === x && prevY === y) return
 
 
@@ -139,6 +142,29 @@ class App extends Component {
     }
 
 
+  }
+
+  handleVisualizeButton = () => {
+
+    this.state.game.clearBoardExceptWall()
+    this.state.game.runAlgo('BFS', 'init')
+
+    var interval = setInterval(() => {
+
+      let done = this.state.game.runAlgo('BFS', 'run')
+      if (!done) {
+        let clone = this._copyBoard()
+        this.setState({ game: clone })
+      }
+      else {
+        let clone = this._copyBoard()
+        for (let cell of clone.final_path) {
+          cell.final_path = true;
+        }
+        this.setState({ game: clone })
+        clearInterval(interval);
+      }
+    }, 1);
   }
 
   // componentDidMount() {
@@ -158,6 +184,7 @@ class App extends Component {
     return (
       <div className="App">
         <NavBar />
+        <button className='btn btn-primary' onClick={this.handleVisualizeButton}>Visualize</button>
         <Board boardTouchMove={this.handleTouchMove} boardDrag={this.handleDrag} boardMouseUp={this.handleMouseUp} boardMouseDown={this.handleMouseDown} board={this.state.game.Board.board} boardClick={this.handleBoardClick} />
       </div>
     );
