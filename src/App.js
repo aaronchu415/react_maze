@@ -183,9 +183,22 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <NavBar />
-        <button className='btn btn-primary' onClick={this.handleVisualizeButton}>Visualize</button>
-        <Board boardTouchMove={this.handleTouchMove} boardDrag={this.handleDrag} boardMouseUp={this.handleMouseUp} boardMouseDown={this.handleMouseDown} board={this.state.game.Board.board} boardClick={this.handleBoardClick} />
+        <div className="sidenav">
+
+          <div className='content w-75 ml-auto mr-auto pb-5'>
+            <div className='Logo text-white text-center'>Algo-It Bitches</div>
+            <button className='btn btn-success w-100 mt-2' onClick={this.handleVisualizeButton}>Visualize</button>
+
+          </div>
+          <div className='content w-75 ml-auto mr-auto'>
+            <button className='btn btn-primary w-100 mt-2' onClick={this.handleVisualizeButton}>Breath-First-Search</button>
+            <button className='btn btn-primary w-100 mt-2' onClick={this.handleVisualizeButton}>A* Search</button>
+            <button className='btn btn-primary w-100 mt-2' onClick={this.handleVisualizeButton}>Djastra</button>
+          </div>
+        </div>
+        <div className='main'>
+          <Board boardTouchMove={this.handleTouchMove} boardDrag={this.handleDrag} boardMouseUp={this.handleMouseUp} boardMouseDown={this.handleMouseDown} board={this.state.game.Board.board} boardClick={this.handleBoardClick} />
+        </div>
       </div>
     );
   }

@@ -15,7 +15,7 @@ class Board extends Component {
   render() {
     const { board } = this.props;
     return (
-      <table class="table table-bordered">
+      <table class="table table-bordered h-100">
         <tbody>
           {board.map(row => this.renderRow(row))}
         </tbody>
